@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "react": "^16.8.2",
-    "react-dom": "^16.8.2"
+    "react-dom": "^16.8.2",
+    "react-qr-reader": "^2.1.2"
   },
   "devDependencies": {
     "react-scripts": "2.1.5"
