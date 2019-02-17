@@ -1,20 +1,22 @@
 import React, { Component } from "react";
 import QrReader from "react-qr-reader";
+import queryString from 'query-string';
  
 class Qrscanner extends Component {
   constructor(props) {
     super(props);
     this.state = {
       delay: 500,
-      result: "No xDai address is found"
+      result: "",
+      status: "No xDai address is found"
     };
     this.handleScan = this.handleScan.bind(this);
   }
   handleScan(data) {
     if (data && data !== this.state.result) {
-      this.setState({
-        result: data
-      });
+        this.setState({
+            result: data
+        });
       //update, woohooo!
       console.log("new qr code found!");
       // that means that we scanned some sort of qr code
@@ -45,13 +47,53 @@ class Qrscanner extends Component {
         }
       }
       if (xDaiAddress) {
+        const status = "xDai = " + xDaiAddress + ", value = " + xDaiValue;
+        this.setState({status: status});
+        
         // let's call API and update the right JSON on redis
-        console.log("xDai = " + xDaiAddress + ", value = " + xDaiValue);
+        console.log(window.location.search);
+        this.callApi(xDaiAddress, xDaiValue);
+
+      } else {
+        this.setState({status: "No valid xDai address is found"});
       }
       
 
     }
   }
+
+  callApi = async (address, value) => {
+        const url = window.location.search;
+        console.log(url);
+        const id = queryString.parse(url).tx || "";
+        //console.log(id);
+        //window.location = "https://ethergram.tk/send/?tx=" + id;
+        
+        const request = {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: {
+                toAddress: address,
+                value: value
+            }
+        };
+        
+        const responce = await fetch('http://54.224.129.179:3000/transactionUpdate/'+id, request)
+            .then(response => response.json())
+            .then(json => {
+                // redirectact
+                window.location = "https://ethergram.tk/send/?tx=" + id;
+            })
+            .catch(e => {
+                console.log(e);
+                return e
+            });
+
+        return responce;
+    }
 
    isAddress = function (address) {
         if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
@@ -75,6 +117,7 @@ class Qrscanner extends Component {
           facingMode="environment"
         />
         <p>{this.state.result}</p>
+        <p>{this.state.status}</p>
       </div>
     );
   }
