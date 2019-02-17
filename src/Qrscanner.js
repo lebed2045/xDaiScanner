@@ -75,10 +75,10 @@ class Qrscanner extends Component {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: {
+            body: JSON.stringify({
                 toAddress: address,
                 value: value
-            }
+            })
         };
         
         const responce = await fetch('https://ethergram.tk/api/transactionUpdate/'+id, request)
