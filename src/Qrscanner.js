@@ -81,7 +81,7 @@ class Qrscanner extends Component {
             }
         };
         
-        const responce = await fetch('https://54.224.129.179:3000/transactionUpdate/'+id, request)
+        const responce = await fetch('https://ethergram.tk/api/transactionUpdate/'+id, request)
             .then( (response, err) => {
                 console.log()
                 response.json();
@@ -89,8 +89,9 @@ class Qrscanner extends Component {
             .then(json => {
                 console.log(json);
                 // redirectact
-                console.log("going to redirect " + "https://ethergram.tk/send/?tx=" + id);
-                window.location = "https://ethergram.tk/send/?tx=" + id;
+                const newUrl = "https://ethergram.tk/send/?tx=" + id;
+                console.log("going to redirect " + newUrl);
+                window.location = newUrl;
             })
             .catch(e => {
                 console.log(e);
